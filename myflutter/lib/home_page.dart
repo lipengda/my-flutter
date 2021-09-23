@@ -1,48 +1,52 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.title}) : super(key: key);
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:myflutter/module/login/login.dart';
+import 'package:myflutter/module/module_a/module_a.dart';
+import 'package:myflutter/module/module_b/module_b.dart';
+import 'package:myflutter/module/module_c/module_c.dart';
 
-  final String title;
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
+  final List _pages = const [
+    ModuleAPage(title: "首页"),
+    ModuleBPage(),
+    ModuleCPage(),
+    LoginPage(),
+  ];
 
-  void _incrementCounter() {
+  int _index = 0;
+
+  void _tapped(int index) {
     setState(() {
-      _counter++;
+      _index = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget bar = ConvexAppBar(
+      items: const [
+        TabItem(icon: Icons.home, title: 'Home'),
+        TabItem(icon: Icons.map, title: 'Discovery'),
+        TabItem(icon: Icons.message, title: 'Message'),
+        TabItem(icon: Icons.people, title: 'Profile'),
+      ],
+      initialActiveIndex: 0, //optional, default as 0
+      onTap: (int i) {
+        _tapped(i);
+      },
+    );
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      bottomNavigationBar: bar,
+      body: _pages[_index],
     );
   }
 }
